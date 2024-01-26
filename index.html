@@ -15,17 +15,8 @@
             'U': '#422B07'
         }
 
-        window.onload = () => {
 
-            // var fixed = ""
-            // for (let i = 0; i < PATTERN.length; i++) {
-            //     const char = PATTERN[i];
-            //     if ("IMNRTU".includes(char)){
-            //         fixed += char;
-            //     }
-            // }
-            // console.log(fixed)
-            // console.log(PATTERN)
+        window.onload = () => {
 
             var x = 1
             var y = 1
@@ -47,6 +38,14 @@
                 block.style.position = "absolute"
                 block.style.left = x * 20 + "px"
                 block.style.top = y * 20 + "px"
+                block.style.opacity = 0 + "%"
+                
+                block.classList.add("hover-effect");
+
+                block.addEventListener("mouseover", () => {
+                    block.classList.add("visible");
+
+                });
 
                 canvas.appendChild(block)
 
@@ -56,7 +55,25 @@
         }
 
     </script>
+    <style>
 
+        @keyframes revealPixel {
+            from {
+                opacity: 0%
+            } to {
+                opacity: 100%
+            }
+        }
+
+        .hover-effect {
+            transition: transform 0.3s ease;
+        }
+
+        .visible {
+            animation: revealPixel 1s forwards;
+        }
+
+    </style>
 </head>
 <body>
     <div id="canvas"></div>
