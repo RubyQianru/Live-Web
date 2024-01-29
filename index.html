@@ -2,6 +2,10 @@
 	<head>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript">
+            /*
+                Reimagine chat!  Starting with the example from class, modify the front end (public/index.html) – adding any features or design/interaction that you would love to see in chat.  You might need to do a bit of work on the server as well – depending on what you want to happen.
+            
+            */
 			var socket = io.connect();
 			
 			socket.on('connect', function() {
@@ -24,20 +28,31 @@
         <style>
             body{
                 margin: auto;
+                display: flex;
+                justify-content: center;
             }
+
             #chatbox{
                 width: 330px;
                 margin: 20px;
             }
+
             #messages{
                 margin-bottom: 10px;
             }
+
             #message{
                 width: 80%;
                 padding: 10px;
-                border: 1pm solid #ccc;
+                /* border: 1pm solid #ccc; */
                 border-radius: 5px;
                 margin-right: 5px;
+            }
+
+            #message:focus{
+                outline: none;
+                border-color: #2196F3;
+                box-shadow: none;
             }
 
             #submit{
@@ -48,12 +63,17 @@
                 border-radius: 5px;
                 cursor: pointer;
             }
+
+            #submit:hover{
+                background-color: #4cff;
+
+            }
         </style>
 	</head>
  <body>
     <div id="chatbox">
         <div id="messages">
-            Chat with me.
+            Chat with Ruby.
         </div>
         <input type="text" id="message" name="message">
         <input type="submit" id="submit" value="submit" onclick="sendmessage(document.getElementById('message').value);">
