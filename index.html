@@ -19,13 +19,45 @@
 				console.log("chatmessage: " + message);
 				socket.emit('chatmessage', message);
 			};
+
 		</script>	
+        <style>
+            body{
+                margin: auto;
+            }
+            #chatbox{
+                width: 330px;
+                margin: 20px;
+            }
+            #messages{
+                margin-bottom: 10px;
+            }
+            #message{
+                width: 80%;
+                padding: 10px;
+                border: 1pm solid #ccc;
+                border-radius: 5px;
+                margin-right: 5px;
+            }
+
+            #submit{
+                padding: 10px;
+                background-color: #4caf;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        </style>
 	</head>
  <body>
- <div id="messages">
- No Messages Yet
- </div>
- <input type="text" id="message" name="message">
- <input type="submit" value="submit" onclick="sendmessage(document.getElementById('message').value);">
+    <div id="chatbox">
+        <div id="messages">
+            Chat with me.
+        </div>
+        <input type="text" id="message" name="message">
+        <input type="submit" id="submit" value="submit" onclick="sendmessage(document.getElementById('message').value);">
+    </div>
+        
  </body>
 </html>
