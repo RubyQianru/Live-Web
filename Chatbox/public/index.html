@@ -1,0 +1,88 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+		<script type="text/javascript">
+            /*
+                Reimagine chat!  Starting with the example from class, modify the front end (public/index.html) 
+                – adding any features or design/interaction that you would love to see in chat.  You might need 
+                to do a bit of work on the server as well – depending on what you want to happen.
+            */
+			var socket = io.connect();
+			const windowWidth  = window.innerWidth
+			const windowHeight = window.innerHeight
+			
+			socket.on('connect', function() {
+				console.log("Connected")
+			});
+
+			const colors = [
+				"#FFB6C1", // Baby Pink
+				"#89CFF0", // Baby Blue
+				"#E6E6FA", // Lavender
+				"#98FB98", // Mint Green
+				"#FFDAB9", // Peach
+				"#87CEEB", // Sky Blue
+				"#FFFF99", // Pale Yellow
+				"#DCD0FF", // Light Lavender
+				"#98FB98", // Pale Green
+				"#F7CAC9"  // Rose Quartz (Light Pink)
+			];
+
+			function createBubble(data) {
+				const messages = document.querySelector('.messages')
+				const bubble = document.createElement('div')
+				bubble.innerHTML += data
+				bubble.classList.add('bubble')
+				const x = Math.random() * windowWidth
+				const color = colors[Math.round(Math.random()*10 - 1)]
+				console.log(x)
+	
+				bubble.style.backgroundColor = color
+
+				const messageLength = data.length;
+				const minWidth = 30; 
+				const maxWidth = 300; 
+				const width = Math.min(Math.max(messageLength * 30, minWidth), maxWidth); 
+
+				bubble.style.width = `${width}px`;
+				bubble.style.height = 'auto'; 
+				bubble.style.left = `${x-width}px`;
+
+				messages.appendChild(bubble)
+
+				gsap.to('.bubble', {
+					y: -(windowHeight - 60),
+					duration: 50 }
+				)
+			}
+			// Receive from any event
+			socket.on('chatmessage', function (data) {
+				console.log(data);
+				createBubble(data)
+			});
+
+			var sendmessage = function(message) {
+				console.log("chatmessage: " + message);
+				createBubble(message)
+				socket.emit('chatmessage', message);
+			};
+
+		</script>	
+        <link rel="stylesheet" href="style.css">
+
+	</head>
+ <body>
+    <div class="messages">
+	</div>
+    <div id="chatbox">
+        
+        <div id="title">
+            This is Chat-BEEBEE.
+        </div>
+        <input type="text" id="message" name="message">
+        <input type="submit" id="submit" value="submit" onclick="sendmessage(document.getElementById('message').value);">
+    </div>
+        
+ </body>
+</html>
