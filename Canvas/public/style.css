@@ -1,59 +1,22 @@
-body{
-    margin: auto;
-    display: flex;
-    justify-content: center;
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+
 }
 
-#chatbox{
-    width: 500px;
-    margin: 20px;
-    position: fixed;
-    bottom: 20px;
+canvas {
+  display: block;
 }
 
-.messages{
-    width: 100vw;
-    margin-bottom: 10px;
-    position: fixed;
-    bottom: 40px;
+#canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.bubble{
-    position: absolute;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px;
+#bottomPanel {
+  margin-top: 400px;
 }
 
 
-#title{
-    margin-bottom: 10px;
-}
-
-#message{
-    width: 80%;
-    padding: 10px;
-    /* border: 1pm solid #ccc; */
-    border-radius: 5px;
-    margin-right: 5px;
-}
-
-#message:focus{
-    outline: none;
-    border-color: #2196F3;
-    box-shadow: none;
-}
-
-#submit{
-    padding: 10px;
-    background-color: #4caf;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#submit:hover{
-    background-color: #4cff;
-
-}
