@@ -2,15 +2,20 @@ let classifier
 let labelSpan
 let confidenceSpan
 let clearButton
-let problemTitle
+let promptTitle
 let canvas
+let feedback
 
-// problems 
-let items = ["hand", "rabbit", "mouse", "strawberry", "mouth"]
-let problem
+// prompts 
+let items = ["hand", "rabbit", "mouse", "strawberry", "mouth", "snake", "cookie"]
+let prompt
 
-// score
-let score = 0
+//socket communication
+let socket = io.connect()
+
+socket.on('connect', function() {
+  console.log("Connected")
+})
 
 function preload() {
   classifier = ml5.imageClassifier('DoodleNet');
@@ -21,54 +26,95 @@ function setup() {
   background(255);
   classifier.classify(canvas, gotResult);
 
-  clearButton = select("#clearBtn");
+  clearButton = select("#clearBtn")
   clearButton.mousePressed(clearCanvas);
 
-  labelSpan = select("#label");
-  confidenceSpan = select("#confidence");
+  labelSpan = select("#label")
+  confidenceSpan = select("#confidence")
 
-  problemTitle = select('#problemTitle')
-  problemInit()
+  promptTitle = select('#promptTitle')
+  promptInit()
+
+  feedback = select('#feedback')
 
   scoreSpan = select('#score')
-
 }
 
-function clearCanvas() {
-  background(255);
-}
+//handle draw on canvas
+socket.on("draw", function(data){
+  strokeWeight(16)
+  stroke(0)
+  line(data.x, data.y, data.prevX, data.prevY)
+})
 
 function draw() {
   canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2)
-
-  strokeWeight(16);
-  stroke(0);
+  strokeWeight(16)
+  stroke(0)
   if (mouseIsPressed) {
-    line(pmouseX, pmouseY, mouseX, mouseY);
+    line(pmouseX, pmouseY, mouseX, mouseY)
+    socket.emit("draw", { x: mouseX, y: mouseY, prevX: pmouseX, prevY: pmouseY })
   }
+
+  if (select('#feedback') !== "" && !mouseIsPressed) {
+    feedback.html("")
+  }
+
 }
 
-function problemInit() {
-  problem = random(items)
-  problemTitle.html("Draw a " + problem)
+//handle clear canvas
+socket.on("clearCanvas", function() {
+  background(255)
+})
+
+function clearCanvas() {
+  background(255)
+  socket.emit("clearCanvas")
 }
+
+//handle prompt
+function promptInit() {
+  prompt = random(items)
+  socket.emit("prompt", prompt)
+}
+
+socket.on("prompt", function(data){
+  promptTitle.html("Draw a " + data)
+})
+
+//handle score
+// score
+let score = 0
 
 function updatetScore() {
   score += 1
-  scoreSpan.html(score)
+  socket.emit("score", score)
 }
 
+// function feedbackWin() {
+//   push() 
+//   noStroke()
+//   textSize(32)
+//   textAlign(CENTER, CENTER)
+//   text("You did it!", width/2, height/2) 
+//   pop()
+// }
 
+socket.on("score", function(data){
+  scoreSpan.html(data)
+  feedback.html("You did it!")
+})
+
+// ml5 results
 function gotResult(error, results) {
   if (error) {
     console.error(error);
     return;
   }
   labelSpan.html("Is it a " + results[0].label + "?");
-  // confidenceSpan.html(floor(100 * results[0].confidence));
 
-  if (results[0].label == problem){
-    problemInit()
+  if (results[0].label == prompt){
+    promptInit()
     updatetScore()
     clearCanvas()
   }

@@ -16,7 +16,14 @@ canvas {
 }
 
 #bottomPanel {
-  margin-top: 400px;
+  height: 10vh;
+  width: 100vw;
+  position: fixed;
+  bottom: 10vh;
+
+  align-items: center;
 }
+
+
 
 
