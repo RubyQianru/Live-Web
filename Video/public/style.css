@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+
+}
+
+canvas {
+  display: block;
+}
+
+#canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#bottomPanel {
+  height: 10vh;
+  width: 100vw;
+  position: fixed;
+  bottom: 10vh;
+
+  align-items: center;
+}
+
+
+
+
