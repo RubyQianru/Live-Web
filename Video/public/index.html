@@ -4,41 +4,141 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
 
-    <title>Sketch</title>
+      window.addEventListener("load", function(){
+        const URL = "https://teachablemachine.withgoogle.com/models/_sKU0E-Yh/"
 
+        let model, labelContainer, maxPredictions, id
+        const heart = document.getElementById('heart')
+        const raiseHand = document.getElementById('raiseHand')
+        const clap = document.getElementById('clap')
+
+        let socket = io.connect()
+
+        socket.on('connect', function() {
+          console.log("Connected")
+        })
+
+        socket.on('connection', function(data){
+          id = data
+          const videos = document.getElementById('videos')
+          const div = document.createElement('div')
+          const img = document.createElement('img')
+          div.innerText = id
+          img.id = id
+          div.style.height  = 300 + 'px'
+          div.style.width = 400 + 'px'
+          div.appendChild(img)
+          videos.appendChild(div)
+        })
+
+        let heartToggle = false
+        let raiseToggle = false
+        let clapToggle = false
+
+        async function predict(target) {
+          const prediction = await model.predict(target)
+          if (prediction[0].probability >= 0.95 && heartToggle == false ) {
+            sendSymbol(heart)
+            symbolToggle(heartToggle)
+          }
+
+          else if (prediction[1].probability >= 0.95 && raiseToggle == false ) {
+            sendSymbol(raiseHand)
+            symbolToggle(raiseToggle)
+          }
+
+          else if (prediction[2].probability >= 0.95 && raiseToggle == false ) {
+            sendSymbol(clap)
+            symbolToggle(clapToggle)
+          }
+        }
+
+        function sendSymbol(symbol) {
+          symbol.className = 'visible'
+
+          setTimeout(() => {
+            symbol.classList.remove('visible')
+          }, 2000);            
+        }        
+
+        function symbolToggle(toggle) {
+          toggle = true
+          setTimeout(() => {
+              toggle = false
+            }, 2001)
+        }
+
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+        }
+
+        init()
+        const video = document.getElementById('thevideo')
+        const constraints = { audio: false, video: true }
+        const canvas = document.getElementById('thecanvas')
+        const context = canvas.getContext('2d')
+        const image = document.getElementById('theimage')
+
+        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+          video.srcObject = stream;
+          
+          video.onloadedmetadata = function(e) {
+            video.play()
+            setInterval(() => {
+              context.drawImage(video, 0, 0, canvas.width, canvas.height)
+              predict(canvas)
+              url = canvas.toDataURL()
+              // console.log(url)
+              socket.emit('video', {id, url})
+            }, 100);
+          };
+          
+        }).catch(function(err) {
+          alert(err);  
+        });
+
+        socket.on('video', function(data){
+          const img = document.getElementById(data.id)
+          img.src = data.url;
+        })
+
+      })
+
+    </script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <style>
-      body {
-        background-color: #EEE;
-      }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
-    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
-
+ 
   </head>
 
   <body>
-      <div id="scoreBoard">
-        <h2>Score:</h2>
-        <p id="score">0</p>
-      </div>
-      <h2 id="promptTitle">Hi</h2>
+    <div id="videos">
 
-      <div id="feedback"></div>
+    </div>
+      <div id="videoContainer">
+        <div id="heart">
+          <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z" fill="pink"/>
+            </svg>
+        </div>
+        <div id="raiseHand" >
+          🤚
+        </div>
+        <div id="clap">
+          👏
+        </div>
+        <canvas id="thecanvas" width="400px" height="300px"></canvas>
+    </div>
+    
 
-      <div id="canvas">
-        <script src="sketch.js"></script>
-      </div>
-
-      
-      <div id="bottomPanel">
-        <button id="clearBtn">Clear Canvas</button>
-        <p id="label"></p>
-      </div>
-
-  
-
+    <video src="" id="thevideo" muted hidden></video>
+    <img src="" alt="" id="theimage">
   </body>
 </html>
