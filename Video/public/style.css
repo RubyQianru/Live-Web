@@ -7,6 +7,23 @@ body {
   justify-content: center;
 }
 
+#thecanvas {
+  position: absolute;
+  right: 0;
+}
+
+#videos {
+  display: flex;
+  justify-content: space-around;
+  
+  margin: 20px;
+}
+
+.id {
+  display: flex;
+  flex-direction: column;
+}
+
 #heart {
   position: absolute;
   height: 100px;

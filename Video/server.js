@@ -39,6 +39,7 @@ io.sockets.on('connection',
 	// We are given a websocket object in our function
 	function (socket) {
 		console.log("We have a new client: " + socket.id);
+		
 		const id = userIds[ptr]
 		console.log("The new client: " + id)
 		ptr += 1
@@ -47,6 +48,18 @@ io.sockets.on('connection',
 
 		socket.on('video', function(data){
 			socket.broadcast.emit('video', data)
+		})
+
+		socket.on('heart', function(){
+			io.emit('heart')
+		})
+
+		socket.on('raise', function(){
+			io.emit('raise')
+		})
+
+		socket.on('clap', function(){
+			io.emit('clap')
 		})
 		
 		socket.on('disconnect', function() {

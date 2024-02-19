@@ -6,12 +6,15 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="./mlhelper.js" defer></script>
     <script type="text/javascript">
 
       window.addEventListener("load", function(){
-        const URL = "https://teachablemachine.withgoogle.com/models/_sKU0E-Yh/"
+        let id
+        let heartToggle = false
+        let raiseToggle = false
+        let clapToggle = false 
 
-        let model, labelContainer, maxPredictions, id
         const heart = document.getElementById('heart')
         const raiseHand = document.getElementById('raiseHand')
         const clap = document.getElementById('clap')
@@ -28,56 +31,13 @@
           const div = document.createElement('div')
           const img = document.createElement('img')
           div.innerText = id
+          div.className = "id"
           img.id = id
           div.style.height  = 300 + 'px'
           div.style.width = 400 + 'px'
           div.appendChild(img)
           videos.appendChild(div)
         })
-
-        let heartToggle = false
-        let raiseToggle = false
-        let clapToggle = false
-
-        async function predict(target) {
-          const prediction = await model.predict(target)
-          if (prediction[0].probability >= 0.95 && heartToggle == false ) {
-            sendSymbol(heart)
-            symbolToggle(heartToggle)
-          }
-
-          else if (prediction[1].probability >= 0.95 && raiseToggle == false ) {
-            sendSymbol(raiseHand)
-            symbolToggle(raiseToggle)
-          }
-
-          else if (prediction[2].probability >= 0.95 && raiseToggle == false ) {
-            sendSymbol(clap)
-            symbolToggle(clapToggle)
-          }
-        }
-
-        function sendSymbol(symbol) {
-          symbol.className = 'visible'
-
-          setTimeout(() => {
-            symbol.classList.remove('visible')
-          }, 2000);            
-        }        
-
-        function symbolToggle(toggle) {
-          toggle = true
-          setTimeout(() => {
-              toggle = false
-            }, 2001)
-        }
-
-        async function init() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
-        }
 
         init()
         const video = document.getElementById('thevideo')
@@ -93,7 +53,7 @@
             video.play()
             setInterval(() => {
               context.drawImage(video, 0, 0, canvas.width, canvas.height)
-              predict(canvas)
+              predict(canvas,heartToggle, raiseToggle, clapToggle)
               url = canvas.toDataURL()
               // console.log(url)
               socket.emit('video', {id, url})
@@ -134,7 +94,7 @@
         <div id="clap">
           👏
         </div>
-        <canvas id="thecanvas" width="400px" height="300px"></canvas>
+        <canvas id="thecanvas" width="200px" height="150px"></canvas>
     </div>
     
 
