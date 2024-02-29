@@ -13,10 +13,18 @@ body {
 }
 
 #videos {
-  display: flex;
-  justify-content: space-around;
-  
-  margin: 20px;
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  height: 100vh;
+  width: 100vw;
+}
+
+#receivedVideo {
+  padding: 0px;
+  margin: 0px;
+  height: 100vh;
+  width: 100vw;
 }
 
 .id {
@@ -47,7 +55,7 @@ body {
   transition: opacity 0.5s ease; 
 }
 
-#clap {
+#yay {
   position: absolute;
   height: 100px;
   width: 100px;
@@ -59,6 +67,24 @@ body {
   transition: opacity 0.5s ease; 
 }
 
+#thumb {
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  font-size: 100px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease; 
+}
+
+#symbolContainer {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
 #heart.visible {
   opacity: 1; 
 }
@@ -67,9 +93,14 @@ body {
   opacity: 1;
 }
 
-#clap.visible {
+#yay.visible {
   opacity: 1;
 }
+
+#thumb.visible {
+  opacity: 1;
+}
+
 
 
 
