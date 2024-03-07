@@ -13,23 +13,23 @@
 		<script src="./socket.js" defer></script>
 		<script type="text/javascript">
 				
-			let simplepeers = [];
 			let mystream;
+			let mlsocket = io.connect()
+			const symbols = ["heart", "raiseHand", "yay", "thumb"]
+			let symbolHandlers = []
+			let mlModel
 
-			
 			window.addEventListener('load', function() {
 				const canvas = document.getElementById('thecanvas')
 				const context = canvas.getContext('2d')
 				initCapture(canvas, context);
 			});
 
-			function initCapture(canvas, context) {
-				console.log("initCapture");
-				
+			function initCapture(canvas, context) {				
 				initModel()
 				let video = document.getElementById('myvideo');
 
-				let constraints = { audio: true, video: true }
+				let constraints = { audio: false, video: true }
 
 				navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
 					mystream = stream;
@@ -48,7 +48,33 @@
 					alert(err);  
 				});	
 			}
-		
+
+			async function initModel() {
+				for (let i = 0; i < symbols.length; i++) {
+					const symbolHandler = new SymbolHandler(symbols[i], i)
+					symbolHandlers.push(symbolHandler)
+				}
+			
+				mlModel = new HandposeModel()
+				await mlModel.tfmodelInit()
+				await mlModel.graphModelInit("./tfjsmodel-graph/model.json")
+
+				for (let symbolHandler of symbolHandlers) {
+					mlsocket.on(symbolHandler.socket, symbolHandler.handler(getSocketId()))
+				}
+
+			}
+
+			async function makePrediction(target) {
+
+				const maxi = await mlModel.predict(target)
+
+				if ( maxi !== null && symbolHandlers[maxi].toggle == false ) {
+					symbolHandlers[maxi].symbolToggle()
+					mlsocket.emit(symbolHandlers[maxi].socket, getSocketId())
+				}
+
+			}
 
 		</script>
 	<link rel="stylesheet" href="style.css">
@@ -57,7 +83,6 @@
 	<div>
 		<video id="myvideo" width="400" height="300" muted></video>
 		<canvas id="thecanvas" width="200px" height="150px" hidden></canvas>
-
 	</div>
 
 	<div id="symbolContainer">
@@ -70,7 +95,7 @@
           🤚
         </div>
         <div id="yay">
-          🙌
+          🎉
         </div>
         <div id="thumb">
           👍

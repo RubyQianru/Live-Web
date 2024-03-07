@@ -1,35 +1,4 @@
-let mlsocket = io.connect()
 
-const symbols = ["heart", "raiseHand", "yay", "thumb"]
-let symbolHandlers = []
-
-let mlModel
-
-async function initModel() {
-  for (let i = 0; i < symbols.length; i++) {
-    const symbolHandler = new SymbolHandler(symbols[i], i)
-    symbolHandlers.push(symbolHandler)
-  }
-  
-  mlModel = new HandposeModel()
-  await mlModel.tfmodelInit()
-  await mlModel.graphModelInit("./tfjsmodel-graph/model.json")
-
-  for (let symbolHandler of symbolHandlers) {
-    mlsocket.on(symbolHandler.socket, symbolHandler.handler())
-  }
-
-}
-
-async function makePrediction(target) {
-
-  const maxi = await mlModel.predict(target)
-
-  if ( maxi !== null && symbolHandlers[maxi].toggle == false ) {
-    symbolHandlers[maxi].symbolToggle()
-    mlsocket.emit(symbolHandlers[maxi].socket)
-  }
-}
 
 class SymbolHandler {
   constructor(id, index) {
@@ -39,10 +8,11 @@ class SymbolHandler {
     this.socket = id
   }
 
-  handler() {
+  handler(data) {
     return () => {
       this.sendSymbol()
       this.symbolToggle()
+      console.log(data)
     }
   }
 
@@ -73,7 +43,6 @@ class HandposeModel {
   }
 
   async tfmodelInit() {
-    // tsjs handpose detection points
     this.tfmodel = await handpose.load()
   }
 
@@ -100,14 +69,26 @@ class HandposeModel {
       const output = tf.tidy(() => {
         return this.model.predict(tf.tensor(inputs, [1, 63]));
       });
+
       const result = await output.array()
-      console.log(result)
       maxi = await this.getResult(result[0])
-      if (result[0][maxi] >= 0.35) {
-        return maxi
+
+      if (maxi == 0 || maxi == 1) {
+        if (result[0][maxi] > 0.6) {
+          return maxi
+        }
+      } else if (maxi == 3) {
+        if (result[0][maxi] >= 0.44) {
+          return maxi
+        }
+      } else if (maxi == 2) {
+        if (result[0][maxi] > 0.4) {
+          return maxi
+        }
       }
+      
+      return null 
     }
-    return null
   }
 
 }

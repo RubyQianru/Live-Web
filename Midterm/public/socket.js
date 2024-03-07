@@ -1,7 +1,12 @@
 let socket
+let simplepeers = []
+let socketId
+
+function getSocketId() {
+    return socketId
+}
 
 function setupSocket() {
-    let socketId
     socket = io.connect();
     
     socket.on('connect', function() {
@@ -72,6 +77,5 @@ function setupSocket() {
         }
     });
 
-    return socketId
-
 }
+
