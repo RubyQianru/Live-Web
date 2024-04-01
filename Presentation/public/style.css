@@ -1,0 +1,82 @@
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+#thecanvas {
+  position: absolute;
+  right: 0;
+}
+
+#videos {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
+}
+
+.id {
+  display: flex;
+  flex-direction: column;
+}
+
+#receivedVideo {
+  width: 100vw;
+  height: 100vh;
+}
+
+#heart {
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease; 
+}
+
+#raiseHand {
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  font-size: 100px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease; 
+}
+
+#clap {
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  font-size: 100px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.5s ease; 
+}
+
+#heart.visible {
+  opacity: 1; 
+}
+
+#raiseHand.visible {
+  opacity: 1;
+}
+
+#clap.visible {
+  opacity: 1;
+}
+
+
+
+
+
+

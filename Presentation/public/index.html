@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="./mlhelper.js" defer></script>
+    <script type="text/javascript">
+
+      window.addEventListener("load", function(){
+
+        let socket = io.connect()
+
+        socket.on('connect', function() {
+          console.log("Connected")
+        })
+
+      })
+
+    </script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+    </style>
+ 
+  </head>
+
+  <body>
+    
+  </body>
+</html>
