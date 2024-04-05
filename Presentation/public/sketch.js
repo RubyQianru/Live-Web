@@ -2,16 +2,16 @@ let bubbleA, bubbleB;
 let radiusA = 20, radiusB = 20;
 let engine;
 
-let socket = io.connect()
+let p5socket = io.connect()
 
-socket.on('connect', function() {
+p5socket.on('connect', function() {
   console.log("Connected")
 })
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    bubbleA = new Bubble(width/2, height - radiusA, radiusA, color(159, 163, 227));
-    bubbleB = new Bubble(width/4, height - radiusB, radiusB, color(201, 147, 212));
+    bubbleA = new Bubble(width/2, height - radiusA, radiusA, color(201, 147, 212));
+    bubbleB = new Bubble(width/4, height - radiusB, radiusB, color(159, 163, 227));
 }
 
 function draw() {
@@ -20,22 +20,38 @@ function draw() {
     noStroke();
 
     bubbleA.update();
+    checkOffBountry(bubbleA);
     bubbleB.update();
+    checkOffBountry(bubbleB);
     bubbleA.show();
     bubbleB.show();
 }
 
-socket.on('voteUpdate', (option) => {
+p5socket.on('voteUpdate', (option) => {
     if (option == 'optionA') {
         bubbleA.radius += 5;
-        bubbleA.vel.y -= 0.01;
+        bubbleA.vel.y *= 1.2;
+        checkOffBountry(bubbleA);
     } else if (option == 'optionB') {
         bubbleB.radius += 5;
-        bubbleB.vel.y -= 0.01;
-
+        bubbleB.vel.y *= 1.2;
+        checkOffBountry(bubbleB);
     }
 });
 
+function checkOffBountry(bubble) {
+    if (bubble.x > width - bubble.radius ) {
+        bubble.x = width - bubble.radius;
+    }
+    if (bubble.x < bubble.radius) {
+        bubble.x = bubble.radius;
+    }
+    if (bubble.y > height - bubble.radius) {
+        bubble.y = height - bubble.radius
+    } if (bubble.y < bubble.radius) {
+        bubble.y = bubble.radius
+    }
+}
 
 function checkCollisions(bubbles) {
     for (let i = 0; i < bubbles.length; i++) {

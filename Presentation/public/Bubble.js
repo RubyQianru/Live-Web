@@ -5,7 +5,7 @@ class Bubble {
         this.x = x;
         this.y = y;
 
-        this.vel = createVector(random(-0.2, 0.2), -0.05 * (50 / this.radius));
+        this.vel = createVector(random(-0.5, 0.5), -0.05 * (50 / this.radius));
     }
 
     update() {

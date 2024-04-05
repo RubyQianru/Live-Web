@@ -40,13 +40,13 @@
             socket.emit('vote', 'optionB');
         });
 
-        // socket.on('voteUpdate', (option) => {
-        //     if (option == 'optionA') {
-        //         document.getElementById('optionAResult').textContent++;
-        //     } else if (option == 'optionB') {
-        //         document.getElementById('optionBResult').textContent++;
-        //     }
-        // });
+        socket.on('voteUpdate', (option) => {
+            if (option == 'optionA') {
+                document.getElementById('optionAResult').textContent++;
+            } else if (option == 'optionB') {
+                document.getElementById('optionBResult').textContent++;
+            }
+        });
 
         socket.on('loadHistory', (votes) => {
             votes.forEach(entry => {
