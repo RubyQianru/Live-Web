@@ -1,21 +1,37 @@
 class Bubble {
-    constructor(x, y, color) {
-        this.r = 20;
+    constructor(x, y, radius = 20, color) {
+        this.radius = radius;
         this.color = color;
-        let options = { restitution: 0.8 };
-        this.body = Bodies.circle(x, y, this.r, options);
-        Body.setVelocity(this.body, Vector.create(-1, 0));
-        Body.setAngularVelocity(this.body, 0.1);
+        this.x = x;
+        this.y = y;
 
+        this.vel = createVector(random(-0.2, 0.2), -0.05 * (50 / this.radius));
+    }
+
+    update() {
+        this.x += this.vel.x;
+        this.y += this.vel.y;
+
+        if (this.x > width - this.radius || this.x < this.radius) {
+            this.vel.x *= -1;
+        }
+        if (this.y > height - this.radius || this.y < this.radius) {
+            this.vel.y *= -1;
+        }
     }
   
     show() {
-        let pos = this.body.position;
         fill(this.color);
         push();
-        translate(pos.x, pos.y);
-        circle(0, 0, this.r * 2); // Use ellipse with diameter
+        translate(this.x, this.y);
+        circle(0, 0, this.radius * 2); // Use ellipse with diameter
         pop();
+    }
+
+    bounce(other) {
+        let temp = this.vel;
+        this.vel = other.vel;
+        other.vel = temp;
     }
   }
   

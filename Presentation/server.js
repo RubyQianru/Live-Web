@@ -19,8 +19,8 @@ var https = require('https');
 
 // Security options - key and certificate
 var options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/sc7436.itp.io/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/sc7436.itp.io/cert.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/qz2432.itp.io/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/qz2432.itp.io/cert.pem')
 };
 
 // We pass in the Express object and the options object

@@ -1,63 +1,52 @@
 let bubbleA, bubbleB;
-let radiusA = 50, radiusB = 50;
+let radiusA = 20, radiusB = 20;
 let engine;
 
+let socket = io.connect()
 
-// socket communication
-// let socket = io.connect()
-
-// socket.on('connect', function() {
-//   console.log("Connected")
-// })
-
-// physics engine
-const { Engine, Bodies, Composite, Body, Vector, Render } = Matter;
+socket.on('connect', function() {
+  console.log("Connected")
+})
 
 function setup() {
-    let canvas =  createCanvas(600, 600);
-
-
-    // physics engine handler
-    engine = Engine.create();
-
-    let render = Render.create({
-      canvas: canvas.elt,
-      engine,
-      options: { width: width, height: height },
-    });
-
-    Render.run(render);
-    
-    bubbleA = new Bubble(width/4, height/4, color(159, 163, 227));
-    bubbleB = new Bubble(width/4, height/4, color(201, 147, 212));
-
-    Composite.add(engine.world, [bubbleA.body, bubbleB.body]);
-
-    let ground = Bodies.rectangle(width / 2, height / 2-20, width, 10, {
-        isStatic: true,
-    });
-
-    Composite.add(engine.world, ground);
-
-    let runner = Matter.Runner.create();
-    Matter.Runner.run(runner, engine);
+    createCanvas(windowWidth, windowHeight);
+    bubbleA = new Bubble(width/2, height - radiusA, radiusA, color(159, 163, 227));
+    bubbleB = new Bubble(width/4, height - radiusB, radiusB, color(201, 147, 212));
 }
 
 function draw() {
+    background(225);
+    checkCollisions([bubbleA, bubbleB]); 
+    noStroke();
 
-    Engine.update(engine);
+    bubbleA.update();
+    bubbleB.update();
     bubbleA.show();
     bubbleB.show();
-
 }
 
 socket.on('voteUpdate', (option) => {
     if (option == 'optionA') {
-        bubbleA.r += 10;
-        bubbleA.show();
+        bubbleA.radius += 5;
+        bubbleA.vel.y -= 0.01;
     } else if (option == 'optionB') {
-        bubbleB.r += 10;
-        bubbleB.r += 10;
+        bubbleB.radius += 5;
+        bubbleB.vel.y -= 0.01;
+
     }
 });
+
+
+function checkCollisions(bubbles) {
+    for (let i = 0; i < bubbles.length; i++) {
+        for (let j = i + 1; j < bubbles.length; j++) {
+            let dx = bubbles[i].x - bubbles[j].x;
+            let dy = bubbles[i].y - bubbles[j].y;
+            let distance = sqrt(dx * dx + dy * dy);
+            if (distance < bubbles[i].radius + bubbles[j].radius) {
+                bubbles[i].bounce(bubbles[j]);
+            }
+        }
+    }
+}
 

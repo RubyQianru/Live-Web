@@ -1,15 +1,12 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #95b36b;
 }
 
-canvas {
-    display: block;
-    margin-bottom: 15px;
-    margin-top: 15px;
-    margin-left: auto;
-    margin-right: auto;
+#prompt {
+    position: absolute;
+    width: 100vw;
+    text-align: center;
 }
   
 #sketch-container {
@@ -20,17 +17,18 @@ canvas {
     border-radius: 4px;
     padding: 10px;
 }
-  
-  
-  
-#resetButton, #saveButton, #toolButton {
-    border: 1px solid #0074B7;
-    background-color: #F7B787;
-    color: #000000;
-    border-radius: 4px;
-    font-size: 12pt;
-    text-align: center;
-    padding: 10px 20px;
-    cursor: pointer;
+
+button {
+    padding: 10px;
+    border-style: hidden;
+    border-radius: 10px;
 }
-  
+
+#optionA {
+    background-color: #c993d4;
+}    
+
+#optionB {
+    background-color: #9fa3e3;
+}  
+
