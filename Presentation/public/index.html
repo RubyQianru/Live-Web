@@ -1,40 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <script src="./mlhelper.js" defer></script>
-    <script type="text/javascript">
+    <title>Live Voting App</title>
+</head>
+<body>
+    <h1>Which one do you prefer</h1>
+    <button id="optionA">Option A</button>
+    <button id="optionB">Option B</button>
 
-      window.addEventListener("load", function(){
+    <div id="results">
+        <h2>Results:</h2>
+        <p>Option A: <span id="optionAResult">0</span> votes</p>
+        <p>Option B: <span id="optionBResult">0</span> votes</p>
+    </div>
 
-        let socket = io.connect()
+    <script>
+        const socket = io();
 
-        socket.on('connect', function() {
-          console.log("Connected")
-        })
+        document.getElementById('optionA').addEventListener('click', () => {
+            socket.emit('vote', 'optionA');
+        });
 
-      })
+        document.getElementById('optionB').addEventListener('click', () => {
+            socket.emit('vote', 'optionB');
+        });
 
-      // socket
-      // 上⬆️ 赞成
-      // 下⬇️ 反对
+        socket.on('voteUpdate', (option) => {
+            if (option == 'optionA') {
+                document.getElementById('optionAResult').textContent++;
+            } else if (option == 'optionB') {
+                document.getElementById('optionBResult').textContent++;
+            }
+        });
 
-      // 问题section
-      // instruction section
-      // data visulization
-
+        socket.on('loadHistory', (votes) => {
+            votes.forEach(entry => {
+                if (entry.option === 'optionA') {
+                    document.getElementById('optionAResult').textContent = entry.count;
+                } else if (entry.option === 'optionB') {
+                    document.getElementById('optionBResult').textContent = entry.count;
+                }
+            });
+        });
     </script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <style>
-    </style>
- 
-  </head>
-
-  <body>
-    
-  </body>
+</body>
 </html>

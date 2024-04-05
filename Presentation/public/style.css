@@ -1,82 +1,36 @@
-body {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #95b36b;
 }
 
-#thecanvas {
-  position: absolute;
-  right: 0;
+canvas {
+    display: block;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
 }
-
-#videos {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px;
+  
+#sketch-container {
+    display:flex;
+    justify-content: center; 
+    align-items: center; 
+    margin-top: 15px;
+    border-radius: 4px;
+    padding: 10px;
 }
-
-.id {
-  display: flex;
-  flex-direction: column;
+  
+  
+  
+#resetButton, #saveButton, #toolButton {
+    border: 1px solid #0074B7;
+    background-color: #F7B787;
+    color: #000000;
+    border-radius: 4px;
+    font-size: 12pt;
+    text-align: center;
+    padding: 10px 20px;
+    cursor: pointer;
 }
-
-#receivedVideo {
-  width: 100vw;
-  height: 100vh;
-}
-
-#heart {
-  position: absolute;
-  height: 100px;
-  width: 100px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.5s ease; 
-}
-
-#raiseHand {
-  position: absolute;
-  height: 100px;
-  width: 100px;
-  font-size: 100px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.5s ease; 
-}
-
-#clap {
-  position: absolute;
-  height: 100px;
-  width: 100px;
-  font-size: 100px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.5s ease; 
-}
-
-#heart.visible {
-  opacity: 1; 
-}
-
-#raiseHand.visible {
-  opacity: 1;
-}
-
-#clap.visible {
-  opacity: 1;
-}
-
-
-
-
-
-
+  
