@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    
     <title>Live Voting App</title>
 </head>
 <body>
     <h1>Which one do you prefer</h1>
     <button id="optionA">Option A</button>
     <button id="optionB">Option B</button>
+
+    <div id="canvas">
+        <script src="Bubble.js"></script>
+        <script src="sketch.js"></script>
+      </div>
 
     <div id="results">
         <h2>Results:</h2>
