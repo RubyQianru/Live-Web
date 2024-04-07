@@ -1,4 +1,5 @@
 let bubbleA, bubbleB;
+let velocityA, velocityB;
 let radiusA = 20, radiusB = 20;
 let engine;
 let bubblesReady = false;
@@ -8,14 +9,16 @@ let p5socket = io.connect()
 p5socket.on('loadHistory', (votes) => {
     votes.forEach(entry => {
         if (entry.option === 'optionA') {
-            radiusA = entry.count;
+            radiusA = entry.count*5+20;
+            velocityA = entry.count*1.5;
         } else if (entry.option === 'optionB') {
-            radiusB = entry.count;
+            radiusB = entry.count*5+20;
+            velocityB = entry.count*1.5;
         }
     });
 
-    bubbleA = new Bubble(width / 2, height - radiusA, radiusA, color(201, 147, 212));
-    bubbleB = new Bubble(width / 4, height - radiusB, radiusB, color(159, 163, 227));
+    bubbleA = new Bubble(width / 2, height - radiusA, radiusA, color(255, 149, 81), velocityA);
+    bubbleB = new Bubble(width / 4, height - radiusB, radiusB, color(95,157,247), velocityB);
     bubblesReady = true; 
 });
 
@@ -44,11 +47,11 @@ function draw() {
 p5socket.on('voteUpdate', (option) => {
     if (option == 'optionA') {
         bubbleA.radius += 5;
-        bubbleA.vel.y *= 1.2;
+        bubbleA.vel.y += 1.5;
         checkOffBountry(bubbleA);
     } else if (option == 'optionB') {
         bubbleB.radius += 5;
-        bubbleB.vel.y *= 1.2;
+        bubbleB.vel.y += 1.5;
         checkOffBountry(bubbleB);
     }
 });
