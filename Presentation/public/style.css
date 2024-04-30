@@ -22,13 +22,16 @@ button {
     padding: 10px;
     border-style: hidden;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 #optionA {
-    background-color: #c993d4;
+    /* background-color: #c993d4; */
+    background-color: #FF9551; 
 }    
 
 #optionB {
-    background-color: #9fa3e3;
+    /* background-color: #9fa3e3; */
+    background-color: #5F9DF7; 
 }  
 

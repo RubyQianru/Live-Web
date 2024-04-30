@@ -1,11 +1,11 @@
 class Bubble {
-    constructor(x, y, radius = 20, color) {
+    constructor(x, y, radius, color, velocity) {
         this.radius = radius;
         this.color = color;
         this.x = x;
         this.y = y;
 
-        this.vel = createVector(random(-0.5, 0.5), -0.05 * (50 / this.radius));
+        this.vel = createVector(random(-0.5, 0.5), -0.05 * (50 / this.radius+ velocity)) ;
     }
 
     update() {
@@ -24,7 +24,7 @@ class Bubble {
         fill(this.color);
         push();
         translate(this.x, this.y);
-        circle(0, 0, this.radius * 2); // Use ellipse with diameter
+        circle(0, 0, this.radius * 2); 
         pop();
     }
 
