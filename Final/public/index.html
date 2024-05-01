@@ -1,0 +1,120 @@
+<html>
+	<head>
+	 	<script src="simplepeer.min.js"></script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+		<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+
+		<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>    
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
+
+		<script src="./animation.js" defer></script>
+		<script src="./videohelper.js" defer></script>
+		<script src="./mlhelper.js" defer></script>
+		<script src="./socket.js" defer></script>
+		<script src="./SimplePeerWrapper.js" defer></script>
+
+		<script type="text/javascript">
+				
+			let mystream;
+			let mlsocket = io.connect()
+			const symbols = ["heart", "raiseHand", "yay", "thumb"]
+			let symbolHandlers = []
+			let mlModel
+
+			window.addEventListener('load', function() {
+				const canvas = document.getElementById('thecanvas')
+				const context = canvas.getContext('2d')
+				initCapture(canvas, context);
+			});
+
+			function initCapture(canvas, context) {				
+				initModel()
+				let video = document.getElementById('myvideo');
+
+				let constraints = { audio: false, video: true }
+
+				navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+					mystream = stream;
+					video.srcObject = stream;
+					
+					video.onloadedmetadata = function(e) {
+						video.play();
+						setInterval(() => {
+							context.drawImage(video, 0, 0, canvas.width, canvas.height)
+							makePrediction(canvas);
+						}, 200);
+					};
+					setupSocket();
+				})
+				.catch(function(err) {
+					alert(err);  
+				});	
+			}
+
+			async function initModel() {
+				for (let i = 0; i < symbols.length; i++) {
+					const symbolHandler = new SymbolHandler(symbols[i], i)
+					symbolHandlers.push(symbolHandler)
+				}
+			
+				mlModel = new HandposeModel()
+				await mlModel.tfmodelInit()
+				await mlModel.graphModelInit("./tfjsmodel-graph/model.json")
+
+				for (let symbolHandler of symbolHandlers) {
+					mlsocket.on(symbolHandler.socket, function(data){
+						symbolHandler.handler(data)
+					})
+					mlsocket.on("gestureLimitReached", function(data){
+						symbolHandler.reachedLimitHandler(data);
+					})
+				}
+			}
+
+			async function makePrediction(target) {
+				const maxi = await mlModel.predict(target)
+
+				if ( maxi !== null && symbolHandlers[maxi].toggle == false ) {
+					symbolHandlers[maxi].symbolToggle()
+					mlsocket.emit(symbolHandlers[maxi].socket, getSocketId())
+				}
+			}
+			
+		</script>
+	<link rel="stylesheet" href="style.css">
+	</head>
+  <body>
+	<canvas id="thecanvas" width="200px" height="150px" hidden></canvas>
+	<section id="videos">
+		<video id="myvideo" width="200px" height="150px" muted></video>
+	</section>
+
+	<ul id="panel">
+		<h4 id="header">Messages: </h2>
+	</ul>
+
+	<canvas id="animation" ></canvas>
+
+	<div id="symbolContainer">
+        <div id="heart">
+          <svg width="100px" height="100px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 9.1371C2 14 6.01943 16.5914 8.96173 18.9109C10 19.7294 11 20.5 12 20.5C13 20.5 14 19.7294 15.0383 18.9109C17.9806 16.5914 22 14 22 9.1371C22 4.27416 16.4998 0.825464 12 5.50063C7.50016 0.825464 2 4.27416 2 9.1371Z" fill="pink"/>
+            </svg>
+        </div>
+        <div id="raiseHand" >
+          🤚
+        </div>
+        <div id="yay">
+          🎉
+        </div>
+        <div id="thumb">
+          👍
+        </div>
+      </div>
+
+  </body>
+</html>
